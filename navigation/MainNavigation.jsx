@@ -1,72 +1,76 @@
-import { StyleSheet } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useState, useEffect } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import Home from "../screens/Home";
-import Cart from "../screens/Cart";
-import Profile from "../screens/Profile";
-import Shop from "../screens/Shop";
+import Home from "../screens/main-navigation/Home";
+import Profile from "../screens/main-navigation/Profile";
+import Shop from "../screens/main-navigation/Shop";
+import Categories from "../screens/main-navigation/Categories";
+import Help from "../screens/main-navigation/Help";
+
+import Header from "../components/MainHeader";
+
+import { COLORS } from "../constants/theme";
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const tabBarLabelStyle = {
+    fontSize: 12,
+    color: COLORS.text,
+    fontFamily: "semi-bold",
+  };
   const tabBarStyle = {
-    backgroundColor: "#ffff00",
-    paddingBottom: 20,
-    borderTopWidth: 0,
-    elevation: 0, // This will remove the shadow on Android
-    shadowOpacity: 0, // This will remove the shadow on iOS
+    borderBlockColor: COLORS.primary,
+    height: 60,
   };
-
-  const options = {
-    tabBarStyle: tabBarStyle,
-    tabBarShowLabel: false,
-    headerShown: false,
-    tabBarIcon: ({ focused }) => (
-      <Ionicons
-        name={focused ? "grid" : "grid-outline"}
-        color={focused ? COLORS.secondary : COLORS.secondary1}
-        size={26}
-      />
-    ),
-  };
-
-  const tabBarOptions = {
-    activeTintColor: "blue",
-    inactiveTintColor: "gray",
-    style: {
-      backgroundColor: "white",
-      borderTopWidth: 1,
-      borderTopColor: "lightgray",
+  const tabs = [
+    { name: "Home", component: Home, focused: "home", idle: "home-outline" },
+    {
+      name: "Categories",
+      component: Categories,
+      focused: "view-grid",
+      idle: "view-grid-outline",
     },
-    labelStyle: {
-      fontSize: 16,
-      fontWeight: "bold",
+    {
+      name: "Mall",
+      component: Shop,
+      focused: "shopping",
+      idle: "shopping-outline",
     },
-  };
+    {
+      name: "Profile",
+      component: Profile,
+      focused: "account-circle",
+      idle: "account-circle-outline",
+    },
+    {
+      name: "Help",
+      component: Help,
+      focused: "help-circle",
+      idle: "help-circle-outline",
+    },
+  ];
   return (
     <Tab.Navigator initialRouteName="Home">
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen name="Shop" component={Shop} />
-      <Tab.Screen name="Cart" component={Cart} />
-      <Tab.Screen name="Profile" component={Profile} />
+      {tabs.map((tab, index) => (
+        <Tab.Screen
+          name={tab.name}
+          component={tab.component}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <MaterialCommunityIcons
+                name={focused ? tab.focused : tab.idle}
+                color={focused ? COLORS.primary : COLORS.text}
+                size={26}
+              />
+            ),
+            header: () => <Header />,
+            tabBarStyle,
+            tabBarLabelStyle,
+          }}
+          key={index}
+        />
+      ))}
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  navigtorStyle: {
-    padding: "10px",
-  },
-});

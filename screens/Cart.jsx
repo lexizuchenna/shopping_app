@@ -5,7 +5,9 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import CartHeader from "../components/headers/CartHeader";
 import SingleHeader from "../components/headers/SingleHeader";
@@ -16,16 +18,51 @@ import { COLORS, SIZES } from "../constants/theme";
 import { useMainContext } from "../context/MainContext";
 
 const Cart = () => {
+  const [text, setText] = useState("");
+  const [filterList, setFilterList] = useState([]);
+  const [isFilter, setIsFilter] = useState(false);
+
   const { cartItems, totalAmount } = useMainContext();
+  const navigation = useNavigation();
+
+  const handleFilter = (text) => {
+    if (text.length > 0) {
+      setIsFilter(true);
+      const filteredList = cartItems.filter((product) =>
+        product.name.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilterList(() => filteredList);
+    } else {
+      setIsFilter(false);
+    }
+  };
   return (
     <View style={{ height: SIZES.height }}>
-      <CartHeader />
-      <SingleHeader text="Select items for checkout" />
+      <CartHeader setIsFilter={setIsFilter} handleChange={handleFilter} />
+      {cartItems.length > 0 && (
+        <SingleHeader
+          text={isFilter ? "Search cart" : "Select items for checkout"}
+        />
+      )}
       <ScrollView style={styles["scroll-view"]}>
         {cartItems.length > 0 ? (
-          cartItems.map((product, index) => (
-            <CartCard product={product} key={index} />
-          ))
+          isFilter ? (
+            filterList.length > 0 ? (
+              filterList.map((product, index) => (
+                <CartCard product={product} key={index} />
+              ))
+            ) : (
+              <View style={styles["not-found"]}>
+                <Text style={{ fontFamily: "semi-bold" }}>
+                  No item available
+                </Text>
+              </View>
+            )
+          ) : (
+            cartItems.map((product, index) => (
+              <CartCard product={product} key={index} />
+            ))
+          )
         ) : (
           <View style={styles["empty-cart"]}>
             <MaterialCommunityIcons
@@ -34,7 +71,10 @@ const Cart = () => {
               size={SIZES.width / 2}
             />
             <Text style={styles.text}>Your shopping cart is empty</Text>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => navigation.navigate("Mall")}
+            >
               <Text style={styles["btn-text"]}>Continue shopping</Text>
             </TouchableOpacity>
           </View>
@@ -88,6 +128,7 @@ const styles = StyleSheet.create({
   "empty-cart": {
     justifyContent: "center",
     alignItems: "center",
+    height: SIZES.height / 1.5,
   },
   text: {
     fontFamily: "bold",
@@ -116,5 +157,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     paddingVertical: 10,
     alignItems: "center",
+  },
+  "not-found": {
+    height: SIZES.height / 2,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

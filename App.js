@@ -12,7 +12,9 @@ import {
 } from "@expo-google-fonts/poppins";
 
 import MainNavigation from "./navigation/MainNavigation";
+
 import Cart from "./screens/Cart";
+import ProductPage from "./screens/ProductPage";
 
 import { MainContext } from "./context/MainContext";
 
@@ -59,6 +61,11 @@ export default function App() {
           <Stack.Screen
             name="cart"
             component={Cart}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="product-page"
+            component={ProductPage}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { COLORS, SIZES } from "../../constants/theme";
 
-const CartHeader = () => {
+const CartHeader = ({ handleChange, setIsFilter }) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const topHeight =
@@ -30,7 +30,11 @@ const CartHeader = () => {
             color={COLORS.primary}
           />
         </TouchableOpacity>
-        <TextInput style={styles["search-input"]} placeholder="Filter cart" />
+        <TextInput
+          style={styles["search-input"]}
+          placeholder="Filter cart"
+          onChangeText={(text) => handleChange(text)}
+        />
       </View>
     </View>
   );

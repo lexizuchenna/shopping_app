@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import { COLORS, SIZES } from "../constants/theme";
 
@@ -7,6 +8,7 @@ import { useMainContext } from "../context/MainContext";
 
 const ProductCard = ({ product, isHot, list }) => {
   const { handleAddCartItem } = useMainContext();
+  const navigation = useNavigation();
   return (
     <View style={[styles["product-main"], styles.list(list)]}>
       <View style={styles["product-wrapper"]}>
@@ -16,7 +18,10 @@ const ProductCard = ({ product, isHot, list }) => {
           </View>
         )}
         <View style={styles["product-card-image"]}>
-          <TouchableOpacity style={styles["products-link-wrapper"]}>
+          <TouchableOpacity
+            style={styles["products-link-wrapper"]}
+            onPress={() => navigation.navigate("product-page", { product })}
+          >
             <Image
               style={styles["product-image"]}
               source={product.images[0]}

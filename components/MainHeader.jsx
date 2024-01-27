@@ -11,12 +11,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import { COLORS, SIZES } from "../constants/theme";
+import { useMainContext } from "../context/MainContext";
 
 const MainHeader = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const topHeight =
     Platform.OS === "android" ? StatusBar.currentHeight : insets;
+  const { cartItems } = useMainContext();
   return (
     <View style={styles["header-container"]}>
       <View style={[styles["main-header"], { marginTop: topHeight }]}>
@@ -35,7 +37,9 @@ const MainHeader = () => {
         >
           <Ionicons name="cart" size={25} color={COLORS.primary} />
           <View style={styles["cart-qty-container"]}>
-            <Text style={styles["cart-qty"]}>0</Text>
+            <Text style={styles["cart-qty"]}>
+              {cartItems.length > 9 ? "20" : cartItems.length}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -77,6 +81,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -6,
     right: -6,
+    height: 18,
+    width: 18,
   },
   "cart-qty": {
     margin: 0,
